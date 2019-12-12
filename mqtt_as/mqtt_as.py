@@ -227,7 +227,7 @@ class MQTT_base:
 
     async def _connect(self, clean):
         self._sock = socket.socket()
-        self._sock.setblocking(False)
+        self._sock.setblocking(True)
         try:
             self._sock.connect(self._addr)
         except OSError as e:
@@ -240,6 +240,7 @@ class MQTT_base:
             self._sock = ussl.wrap_socket(self._sock, **self._ssl_params)
         premsg = bytearray(b"\x10\0\0\0\0\0")
         msg = bytearray(b"\x04MQTT\x04\0\0\0")  # Protocol 3.1.1
+        self._sock.setblocking(False)
 
         sz = 10 + 2 + len(self._client_id)
         msg[6] = clean << 1
